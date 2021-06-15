@@ -613,6 +613,35 @@ end;
 运行结果:
 ![调用存储过程](img/6.2.png)
 
+### 查看表空间：
+```
+SELECT SUM(bytes) / (1024 * 1024) AS free_space, tablespace_name
+FROM dba_free_space
+GROUP BY tablespace_name;
+SELECT a.tablespace_name,
+a.bytes total,
+b.bytes used,
+c.bytes free,
+(b.bytes * 100) / a.bytes "% USED ",
+(c.bytes * 100) / a.bytes "% FREE "
+FROM sys.sm$ts_avail a, sys.sm$ts_used b, sys.sm$ts_free c
+WHERE a.tablespace_name = b.tablespace_name
+AND a.tablespace_name = c.tablespace_name;
+```
+运行结果:
+![查询表空间](img/6.3.png)
+
+### 执行计划分析
+```
+select * 
+from t_user u,t_book b,t_borrow_record br 
+where u.u_id  =  br.u_id
+and b.b_id = br.b_id
+and u.name='user1';
+```
+结果：
+![查看表空间](img/6.4.png)
+
 ## 七、设计手动备份
 ```
 -- 数据备份
@@ -631,3 +660,9 @@ expdp system/AbAch12138@ORCL directory=dpdata1 dumpfile=beifen.dmp logfile=beife
 ```
 结果：
 ![备份](img/7.2.png)
+![备份](img/7.3.png)
+
+## 八、总结
+这次的项目，是这学期的期末考核，自己从安装oracle一步步完成实验，包括用户，表空间，创建表，使用PL/SQL插入数据，设计存储过程和函数。自己也从其中学到了很多的知识，发现了oracle与其他数据库的区别，虽然过程之中遇到了很多从来没有遇到过的问题，但自己还是一步步地解决了。
+
+这次的项目总共使用了七张数据表，创建了两个表空间，两个用户，模拟数据插入了62200条数据。虽然最后项目成功完成了，但是也让我认识到自己的很多不足，最主要的就是对oracle的不熟悉。就连安装都花费了很多的时间。所以，以后一定要多多了解这方面的知识。
